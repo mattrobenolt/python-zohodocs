@@ -86,6 +86,8 @@ class ZohoDocs(object):
         if not 'id' in opts:
             opts['id'] = uuid.uuid4().hex # generate an id
         
+        opts['id'] = str(opts['id']) # Force the id to be a string or pycurl will complain
+        
         res = ZohoDocsResponse()
         conn = pycurl.Curl()
         conn.setopt(pycurl.URL, ZOHO_ENDPOINT % server)
