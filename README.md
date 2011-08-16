@@ -1,6 +1,6 @@
 # python-zohodocs
   
-  A simple library for interacting with Zoho Docs (Writer, Sheet, and Show)
+  A simple library for interacting with Zoho Docs ([Writer](https://writer.zoho.com/), [Sheet](https://sheet.zoho.com), and [Show](https://show.zoho.com/))
 
 ## Installation
   
@@ -28,7 +28,7 @@ z = ZohoDocs(API_KEY)
 # Local document
 print z.open('/var/www/document.doc')
 # File pointer
-fp = open('document.doc', 'r')
+fp = open('/var/www/document.doc', 'r')
 print z.open(fp)
 # URL
 print z.open_url('http://example.com/document.doc')
