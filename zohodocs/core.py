@@ -14,7 +14,7 @@ ZOHO_SERVERS = (
 )
 
 ZOHO_ENDPOINT = 'https://%s.zoho.com/remotedoc.im'
-URL_PATTERN = re.compile(r'^https?://')
+URL_PATTERN = re.compile(r'^https?://', re.I)
 
 class ZohoDocsException(Exception): pass
 class ZohoDocsAPIError(ZohoDocsException): pass
