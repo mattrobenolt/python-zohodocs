@@ -145,7 +145,10 @@ class ZohoDocs(object):
         match = URL_PATTERN.search(url)
         if not match:
             raise ZohoDocsAPIError('Not a valid URL. Must start with http or https: %s' % url)
-        filename = os.path.basename(url)
+        if 'filename' in options:
+            filename = options['filename']
+        else:
+            filename = os.path.basename(url)
         server, format = self.__parse_file_type(filename)
         opts = {
             'format': format,
