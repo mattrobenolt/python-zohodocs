@@ -56,9 +56,8 @@ class ZohoDocsResponse(object):
         return key in self.__keys
 
 class ZohoDocs(object):
-    def __init__(self, api_key, save_url=None, language='en'):
+    def __init__(self, api_key, language='en'):
         self.api_key = api_key
-        self.save_url = save_url
         self.language = language
     
     def __parse_file_type(self, filename):
