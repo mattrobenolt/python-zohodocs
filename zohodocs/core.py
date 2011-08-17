@@ -34,10 +34,10 @@ class ZohoDocsResponse(object):
         RESULT=TRUE
         DOCUMENTID=...
         """
-        raw_response.strip()
+        raw_response = raw_response.strip()
         lines = raw_response.splitlines()
         for l in lines:
-            l.strip()
+            l = l.strip()
             if l:
                 try:
                     key, value = l.split('=', 1)
