@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+"""
+Python library for interfacing with the Zoho Docs API.
+"""
 from setuptools import setup
 
 setup(
     name='python-zohodocs',
     version='0.1.0',
-    description='',
+    description=__doc__,
     author='Matt Robenolt',
     author_email='matt@ydekproductions.com',
     packages=[
