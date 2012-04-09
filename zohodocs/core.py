@@ -2,13 +2,13 @@ import re
 import uuid
 import os.path
 try:
-    import pycurl
+    import requests
 except ImportError:
-    raise ImportError('PyCurl is necessary! `pip install pycurl`')
+    raise ImportError('python-requests is necessary! `pip install requests`')
 
 # (file pattern, server)
 ZOHO_SERVERS = (
-    (re.compile(r'\.(docx?|rtf|odt|sxw|html|txt)$', re.I), 'export.writer'),
+    (re.compile(r'\.(docx?|rtf|odt|sxw|html|txt)$', re.I), 'exportwriter'),
     (re.compile(r'\.(xlsx?|ods|sxc|csv|tsv)$', re.I), 'sheet'),
     (re.compile(r'\.(ppt|pps|odp|sxi)$', re.I), 'show'),
 )
@@ -21,7 +21,7 @@ class ZohoDocsAPIError(ZohoDocsException): pass
 class ZohoDocsFileFormatError(ZohoDocsException): pass
 
 class ZohoDocsResponse(object):
-    """Hole for pycurl to write into. Also nicely parses Zoho's response into k/v pairs."""
+    """Hole for `requests' to write into. Also nicely parses Zoho's response into k/v pairs."""
     __keys = {}
     def write(self, data):
         self.__parse(data)
@@ -73,7 +73,9 @@ class ZohoDocs(object):
                 return i[1], match.group(1)
         raise ZohoDocsFileFormatError('Invalid file format!')
     
-    def __request(self, server, **options):
+    def __request(self, server, options=None, files=None):
+        if options is None:
+            options = {}
         opts = {
             'apikey': self.api_key,
             'output': 'url',
@@ -86,17 +88,11 @@ class ZohoDocs(object):
         if not 'id' in opts:
             opts['id'] = uuid.uuid4().hex # generate an id
         
-        opts['id'] = str(opts['id']) # Force the id to be a string or pycurl will complain
+        opts['id'] = str(opts['id'])
         
         res = ZohoDocsResponse()
-        conn = pycurl.Curl()
-        conn.setopt(pycurl.URL, ZOHO_ENDPOINT % server)
-        conn.setopt(pycurl.HEADER, False)
-        conn.setopt(pycurl.POST, True)
-        conn.setopt(pycurl.HTTPPOST, list([(k, opts[k]) for k in opts]))
-        conn.setopt(pycurl.WRITEFUNCTION, res.write)
-        conn.perform()
-        conn.close()
+        req = requests.post(ZOHO_ENDPOINT % server, data=opts, files=files)
+        res.write(req.text)
 
         if not res['RESULT']:
             raise ZohoDocsAPIError('Request failed[%s]: "%s"' % (500, res['WARNING']))
@@ -111,24 +107,24 @@ class ZohoDocs(object):
             'format': format,
         }
         opts.update(options)
-        return self.__request(server, **opts)
+        return self.__request(server, options=opts)
     
     def open(self, file_, **options):
         """Send Zoho a filepath or file contents."""
         # Check first if it's a file path
         if isinstance(file_, basestring) and os.path.isfile(file_):
-            options['content'] = (pycurl.FORM_FILE, os.path.abspath(file_))
+            fp = open(os.path.abspath(file_), 'rb')
             filename = os.path.basename(file_)
         # Maybe it's a file-like object?
         elif hasattr(file_, 'read') and callable(file_.read):
-            options['content'] = (pycurl.FORM_CONTENTS, file_.read())
+            fp = file_
             try:
                 # Try and grab name from file object
                 filename = file_.name
             except AttributeError:
                 try:
                     # Hopefully it was passed in manually as an option
-                    filename = opts['filename']
+                    filename = options['filename']
                 except KeyError:
                     raise ZohoDocsAPIError('Filename must be specified. Type could not be determined automatically.')
         else:
@@ -140,7 +136,7 @@ class ZohoDocs(object):
             'filename': filename,
         }
         opts.update(options)
-        return self.__request(server, **opts)
+        return self.__request(server, options=opts, files={'content': (filename, fp)})
     
     def open_url(self, url, **options):
         """Pass a URL for Zoho to open."""
@@ -158,4 +154,4 @@ class ZohoDocs(object):
             'url': url,
         }
         opts.update(options)
-        return self.__request(server, **opts)
+        return self.__request(server, options=opts)

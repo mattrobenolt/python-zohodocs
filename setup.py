@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='python-zohodocs',
-    version='0.0.1',
+    version='0.1.0',
     description='',
     author='Matt Robenolt',
     author_email='matt@ydekproductions.com',
@@ -21,5 +21,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-    install_requires='pycurl',
+    install_requires='requests',
 )

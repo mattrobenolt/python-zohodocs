@@ -3,8 +3,7 @@
   A simple library for interacting with Zoho Docs ([Writer](https://writer.zoho.com/), [Sheet](https://sheet.zoho.com), and [Show](https://show.zoho.com/))
 
 ## Installation
-  
-     pip install git+git://github.com/mattrobenolt/python-zohodocs.git#egg=zohodocs
+```$ pip install zohodocs```
 
 ## Getting Started
   
@@ -16,7 +15,7 @@ from zohodocs import ZohoDocs
   
 ```python
 z = ZohoDocs(API_KEY)
-print z.new('document1.doc')
+print z.new_file('document1.doc')
 ```
 
 ### Opening a Document
