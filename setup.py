@@ -5,7 +5,7 @@ Python library for interfacing with the Zoho Docs API.
 from setuptools import setup
 
 setup(
-    name='python-zohodocs',
+    name='zohodocs',
     version='0.1.0',
     description=__doc__,
     author='Matt Robenolt',
@@ -17,7 +17,7 @@ setup(
         'zohodocs': 'zohodocs',
     },
     license='MIT',
-    url='https://github.com/mattrobenolt/python-zohofiles',
+    url='https://github.com/mattrobenolt/python-zohodocs',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: System Administrators',
